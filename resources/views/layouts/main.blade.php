@@ -18,6 +18,8 @@
     <!-- Scripts -->
     <script src="{{ mix('js/app.js') }}" defer></script>
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@1.2.3/dist/trix.css">
 
 </head>
 <body class="font-sans antialiased">
@@ -39,7 +41,6 @@
                         <div class="ml-4 flex items-center md:ml-6">
                             <x-notification-button />
 
-
                             <!-- Profile dropdown -->
                             @livewire('profile-dropdown')
                         </div>
@@ -56,5 +57,8 @@
 @stack('modals')
 
 @livewireScripts
+<script src="https://unpkg.com/moment"></script>
+<script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
+<script src="https://unpkg.com/trix@1.2.3/dist/trix.js"></script>
 </body>
 </html>

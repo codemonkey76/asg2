@@ -5,10 +5,7 @@
         </h2>
     </x-slot>
 
-    <h2 class="max-w-6xl mx-auto mt-8 px-4 text-lg leading-6 font-medium dark:text-gray-200 text-gray-900 sm:px-6 lg:px-8">
-        Recent activity
-    </h2>
-
-    <!-- Activity list (smallest breakpoint only) -->
-    @livewire('customer-table')
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6">
+        @livewire('customer-table')
+    </div>
 </x-app-layout>
