@@ -28,6 +28,7 @@ class CustomerFactory extends Factory
             'suburb' => $this->faker->city(),
             'state' => $this->faker->state(),
             'postcode' => $this->faker->postcode(),
+            'overdue_balance' => mt_rand(0, 20000)
         ];
     }
 }

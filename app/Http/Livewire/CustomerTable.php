@@ -2,44 +2,75 @@
 
 namespace App\Http\Livewire;
 
+use App\Http\Livewire\DataTable\WithBulkActions;
+use App\Http\Livewire\DataTable\WithSorting;
 use App\Models\Customer;
-use Illuminate\Pagination\Paginator;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CustomerTable extends Component
 {
-    use WithPagination;
+    use WithPagination, WithSorting, WithBulkActions;
 
-    public $search = '';
-    public $sortField = 'name';
-    public $sortDirection = 'asc';
     public $showFilters = false;
-    public $filters = [
-        'status' => '',
-        'amount-min' => null,
-        'amount-max' => null,
-        'date-min' => null,
-        'date-max' => null
-    ];
 
+    public $showDeleteModal = false;
+
+    public $filters = [
+        'search'      => '',
+        'overdue-min' => null,
+        'overdue-max' => null,
+    ];
 
     protected $queryString = ['sortField', 'sortDirection'];
 
-    public function sortBy($field)
+    public function resetFilters()
     {
-        $this->sortDirection = $this->sortField === $field
-            ? $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc'
-            : 'asc';
+        $this->reset('filters');
+    }
 
-        $this->sortField = $field;
+    public function updatedFilters()
+    {
+        $this->resetPage();
+    }
+
+    public function exportSelected(): StreamedResponse
+    {
+        return response()->streamDownload(function () {
+            $this->getSelectedRowsQuery()->toCsv();
+        }, 'customers.csv');
+    }
+    public function deleteSelected()
+    {
+        $this->selectedRowsQuery()->delete();
+
+        $this->showDeleteModal = false;
+    }
+
+    public function getRowsQueryProperty()
+    {
+        $query = Customer::query()
+            ->when($this->filters['overdue-min'],
+                fn($query, $overdueMin) => $query->where('overdue_balance', '>=', (int) $overdueMin * 100))
+            ->when($this->filters['overdue-max'],
+                fn($query, $overdueMax) => $query->where('overdue_balance', '<=', (int) $overdueMax * 100))
+            ->when($this->filters['search'], fn($query, $search) => $query->where('name', 'like', '%'.$search.'%'));
+
+        $this->applySorting($query);
+    }
+    public function getRowsProperty()
+    {
+        return $this->rowsQuery->paginate(15);
     }
 
     public function render()
     {
+        if ($this->selectAll) {
+            $this->selectPageRows();
+        }
         return view('livewire.customer-table', [
-            'customers' => Customer::where('name', 'like', '%'.$this->search.'%')->orderBy($this->sortField,
-                $this->sortDirection)->paginate(15)
+            'customers' => $this->rows
         ]);
     }
 
