@@ -6,7 +6,14 @@
             <x-button.link wire:click="$toggle('showFilters')">@if ($showFilters) Hide @endif Advanced Search...
             </x-button.link>
         </div>
-        <div>
+        <div class="space-x-2 flex items-center">
+            <x-input.group borderless paddingless for="perPage" label="Per Page">
+                <x-input.select wire:model="perPage" id="perPage">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                </x-input.select>
+            </x-input.group>
             <x-dropdown label="Bulk Actions">
                 <x-dropdown.item type="button" wire:click="exportSelected" class="flex items-center space-x-2">
                     <x-icon.download class="text-gray-400 dark:text-gray-600"/><span>Export</span>
@@ -15,6 +22,7 @@
                     <x-icon.trash class="text-gray-400 dark:text-gray-600"/><span>Delete</span>
                 </x-dropdown.item>
             </x-dropdown>
+{{--            @livewire('import-customers')--}}
         </div>
     </div>
     <!-- Advanced Search -->

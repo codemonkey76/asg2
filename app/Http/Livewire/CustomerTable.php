@@ -3,20 +3,19 @@
 namespace App\Http\Livewire;
 
 use App\Http\Livewire\DataTable\WithBulkActions;
+use App\Http\Livewire\DataTable\WithPerPagePagination;
 use App\Http\Livewire\DataTable\WithSorting;
 use App\Models\Customer;
 use Livewire\Component;
-use Livewire\WithPagination;
+
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CustomerTable extends Component
 {
-    use WithPagination, WithSorting, WithBulkActions;
+    use WithPerPagePagination, WithSorting, WithBulkActions;
 
     public $showFilters = false;
-
     public $showDeleteModal = false;
-
     public $filters = [
         'search'      => '',
         'overdue-min' => null,
@@ -57,11 +56,11 @@ class CustomerTable extends Component
                 fn($query, $overdueMax) => $query->where('overdue_balance', '<=', (int) $overdueMax * 100))
             ->when($this->filters['search'], fn($query, $search) => $query->where('name', 'like', '%'.$search.'%'));
 
-        $this->applySorting($query);
+        return $this->applySorting($query);
     }
     public function getRowsProperty()
     {
-        return $this->rowsQuery->paginate(15);
+        return $this->applyPagination($this->rowsQuery);
     }
 
     public function render()

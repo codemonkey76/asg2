@@ -8,11 +8,11 @@ trait WithBulkActions
     public $selectAll = false;
     public $selected = [];
 
-    public function initializeWithBulkActions()
+    public function renderingWithBulkActions()
     {
-        $this->beforeRender(function() {
-            if ($this->selectAll) $this->selectPageRows();
-        });
+        if ($this->selectAll) {
+            $this->selectPageRows();
+        }
     }
 
     public function updateSelected()
@@ -23,7 +23,9 @@ trait WithBulkActions
 
     public function updatedSelectPage($value)
     {
-        if ($value) return $this->selectPageRows();
+        if ($value) {
+            return $this->selectPageRows();
+        }
 
         $this->selected = [];
     }
